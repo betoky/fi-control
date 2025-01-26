@@ -1,0 +1,29 @@
+<div class="min-h-screen flex justify-center items-center">
+  <div class="p-5 pt-10 md:bg-slate-50 md:shadow-lg rounded w-full md:w-1/2">
+    <div class="text-center mb-5">
+      <div class="text-surface-900 uppercase text-3xl font-medium mb-3">Fi-control</div>
+      <div class="text-surface-600 text-sm mb-3">Bienvenue dans votre espace financier
+        <i class="pi pi-wallet" style="color: var(--p-primary-color);"></i>
+      </div>
+    </div>
+  
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <label for="email" class="block text-900 font-medium mb-2">Email</label>
+      <input formControlName="email" id="email" type="text" autocomplete="username" pInputText class="w-full mb-3">
+  
+      <label for="password" class="block text-900 font-medium mb-2">Mots de passe</label>
+      <input formControlName="password" id="password" type="password" autocomplete="current-password" pInputText class="w-full mb-3">
+  
+      <div class="flex align-items-center justify-between mb-6">
+        <div class="flex items-center">
+          <p-checkbox class="leading-none me-2" inputId="rememberme" [binary]="true" variant="filled"/>
+          <label for="rememberme">Se souvenir de moi</label>
+        </div>
+        <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
+      </div>
+  
+      <p-button [loading]="loading" type="submit" pRipple label="Se connecter" icon="pi pi-user" styleClass="w-full" />
+    </form>
+  </div>
+</div>
+<p-toast />
