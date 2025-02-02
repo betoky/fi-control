@@ -1,0 +1,60 @@
+<div class="min-h-screen flex justify-center items-center">
+  <div class="p-5 pt-10 md:bg-slate-50 md:shadow-lg rounded w-full md:w-1/2 md:max-w-md">
+    <div class="text-center mb-5">
+      <div class="text-surface-900 uppercase text-3xl font-medium mb-3">Fi-control</div>
+      <div class="text-surface-600 text-sm mb-3">Bienvenue! Creer votre foyer ici.</div>
+    </div>
+
+    <form [formGroup]="registrationForm"  (ngSubmit)="onSubmit()" >
+
+      <input type="hidden" name="username" autocomplete="username" [value]="currentUser()?.email">
+
+      <div class="mb-5">
+        <p-floatlabel variant="on">
+          <label for="name">Votre Nom</label>
+          <input class="w-full" id="name" autocomplete="given-name"
+            pInputText formControlName="name" />
+        </p-floatlabel>
+      </div>
+
+      <div class="mb-5">
+        <p-floatlabel variant="on">
+          <label for="home-name">Nom de votre foyer</label>
+          <input class="w-full" id="home-name" autocomplete="off"
+            pInputText formControlName="home" />
+        </p-floatlabel>
+      </div>
+
+      <div class="mb-5">
+        <p-floatlabel variant="on">
+          <p-password autocomplete="new-password" inputId="password"
+            [toggleMask]="true" formControlName="password"
+            inputStyleClass="w-full" styleClass="w-full"
+            promptLabel="Entrer le mots de passe"
+            weakLabel="Trop simple"
+            mediumLabel="Moyen"
+            strongLabel="Bien"/>
+          <label for="password">Mots de passe</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="mb-5">
+        <p-floatlabel variant="on">
+          <p-password autocomplete="new-password" inputId="confirm"
+            [toggleMask]="true" formControlName="confirm" [feedback]="false"
+            inputStyleClass="w-full" styleClass="w-full"/>
+          <label for="confirm">Confirmer le mots de passe</label>
+        </p-floatlabel>
+        @if (
+          registrationForm.hasError('passwordsNotMatching') &&
+          registrationForm.get('confirm')?.dirty
+        ) {
+          <span class="text-xs text-red-600">Les mots de passe ne correspondent pas</span>
+        }
+      </div>
+
+      <p-button [loading]="isLoading()" type="submit" pRipple label="Enregistrer" icon="pi pi-save" styleClass="w-full" />
+    </form>
+  </div>
+</div>
+<p-toast />

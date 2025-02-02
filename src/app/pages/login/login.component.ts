@@ -1,17 +1,19 @@
 import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { isAuthApiError } from '@supabase/supabase-js';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { FloatLabel } from 'primeng/floatlabel';
 import { Toast } from 'primeng/toast';
 
-import { AuthService } from '../../services/auth.service';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
 
-const PrimeNgImport = [ButtonModule, CheckboxModule, InputTextModule, Toast];
+const PrimeNgImport = [ButtonModule, CheckboxModule, FloatLabel, InputTextModule, PasswordModule, Toast];
 
 @Component({
   selector: 'app-login',
@@ -54,12 +56,18 @@ export class LoginComponent {
         const { email, password } = this.loginForm.getRawValue();
         await this.authService.login(email, password);
       } catch (error) {
-        const errorMsg = isAuthApiError(error) ?
-          "Échec de l'authentification. Veuillez vérifier vos identifiants." :
-          "Une erreur s'est produite. Veuillez réessayer";
+        const errorMsg = isAuthApiError(error) ? {
+          title: "Échec de l'authentification",
+          content: "Veuillez vérifier vos identifiants."
+        } : {
+          title: "Erreur",
+          content: "Une erreur s'est produite. Veuillez réessayer."
+        }
+
         this.messageService.add({
           severity: 'error',
-          detail: errorMsg,
+          summary: errorMsg.title,
+          detail: errorMsg.content,
           life: 6000
         })
       } finally {

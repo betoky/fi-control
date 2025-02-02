@@ -8,19 +8,19 @@
     </div>
   
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <label for="email" class="block text-900 font-medium mb-2">Email</label>
-      <input formControlName="email" id="email" type="text" autocomplete="username" pInputText class="w-full mb-3">
-  
-      <label for="password" class="block text-900 font-medium mb-2">Mots de passe</label>
-      <input formControlName="password" id="password" type="password" autocomplete="current-password" pInputText class="w-full mb-3">
-  
-      <div class="flex align-items-center justify-between mb-6">
-        <div class="flex items-center">
-          <p-checkbox class="leading-none me-2" inputId="rememberme" [binary]="true" variant="filled"/>
-          <label for="rememberme">Se souvenir de moi</label>
-        </div>
-        <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
-      </div>
+      <p-floatlabel class="mb-5" variant="on">
+        <label for="email">Email</label>
+        <input id="email" type="text" class="w-full" autocomplete="username" pInputText formControlName="email">
+      </p-floatlabel>
+
+      <p-floatlabel class="mb-5" variant="on">
+        <p-password inputId="password" autocomplete="current-password"
+          inputStyleClass="w-full" styleClass="w-full"
+          formControlName="password" [toggleMask]="true" [feedback]="false" />
+        <label for="password">Mots de passe</label>
+      </p-floatlabel>
+
+      <p class="mb-4 text-end"><a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a></p>
   
       <p-button [loading]="loading" type="submit" pRipple label="Se connecter" icon="pi pi-user" styleClass="w-full" />
     </form>

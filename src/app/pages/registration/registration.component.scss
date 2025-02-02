@@ -1,0 +1,9 @@
+.ng-submitted.ng-invalid {
+  .p-inputtext.ng-invalid {
+    border-color: var(--p-inputtext-invalid-border-color);
+  }
+  .p-floatlabel:has(.ng-invalid) label {
+    color: var(--p-floatlabel-invalid-color);
+  }
+}
+  
