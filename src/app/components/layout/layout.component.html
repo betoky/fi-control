@@ -1,0 +1,47 @@
+<p-menubar [model]="items"
+  [className]="'sticky top-1.5 left-0 w-full'"
+  [styleClass]="'my-1.5 mx-3 !pr-6 !rounded-full !bg-white/70 backdrop-filter backdrop-blur-sm'">
+  <ng-template #start>
+    <ng-template #item let-item>
+      <ng-container *ngIf="item.routerLink; else urlRef">
+        <a [routerLink]="item.routerLink" class="p-menubar-item-link">
+          <span [class]="item.icon"></span>
+          <span class="ml-2">{{ item.label }}</span>
+        </a>
+      </ng-container>
+      <ng-template #urlRef>
+        <a *ngIf="item.url; else noLink" [href]="item.url" class="p-menubar-item-link">
+          <span [class]="item.icon"></span>
+          <span class="ml-2">{{ item.label }}</span>
+        </a>
+      </ng-template>
+      <ng-template #noLink>
+        <div class="p-menubar-item-link">
+          <span [class]="item.icon"></span>
+          <span class="ml-2">{{ item.label }}</span>
+          <span class="pi pi-fw pi-angle-down ml-2"></span>
+        </div>
+      </ng-template>
+    </ng-template>
+  </ng-template>
+  <ng-template #end>
+    @if (username) {
+    <div class="toky">
+      <p-chip class="!py-0 !pl-0 !pr-4" role="button" (click)="profileMenu.toggle($event)">
+        <span class="bg-primary text-primary-contrast rounded-full w-8 h-8 flex items-center justify-center">
+          {{ username | firstChar }}
+        </span>
+        <span class="ml-2 font-medium">
+          {{ username }}
+        </span>
+      </p-chip>
+      <p-popover #profileMenu [styleClass]="'before:hidden after:hidden'">
+        <p-button label="Se deconnecter" size="small" variant="outlined" severity="danger" (onClick)="authService.logout()" icon="pi pi-sign-out" />
+      </p-popover>
+    </div>
+    }
+  </ng-template>
+</p-menubar>
+<div class="px-3">
+  <router-outlet />
+</div>

@@ -6,6 +6,7 @@ import { noAuthGuard } from './services/guards/auth/no-auth.guard';
 import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { RegistrationComponent } from './pages/registration/registration.component';
+import { LayoutComponent } from './components/layout/layout.component';
 
 export const routes: Routes = [
   {
@@ -20,7 +21,24 @@ export const routes: Routes = [
   },
   {
     path: '',
-    component: DashboardComponent,
-    canActivate: [authGuard, homeGuard]
+    component: LayoutComponent,
+    canActivate: [authGuard, homeGuard],
+    children: [
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+      },
+      {
+        path: 'expense',
+        component: DashboardComponent
+      },
+      {
+        path: 'bank',
+        component: DashboardComponent
+      },
+      {
+        path: '', redirectTo: '/dashboard', pathMatch: 'full'
+      }
+    ]
   }
 ];
