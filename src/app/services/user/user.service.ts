@@ -1,7 +1,10 @@
 import { inject, Injectable } from '@angular/core';
+import { QueryData } from '@supabase/supabase-js';
+import { from, of } from 'rxjs';
+import { switchMap } from "rxjs/operators";
 import { SupabaseService } from '../supabase/supabase.service';
 import { AuthService } from '../auth/auth.service';
-import { IUser } from '../../interfaces/user.interface';
+import { getCached, setCache } from '../../utils/cache.utility';
 
 @Injectable({
   providedIn: 'root'
@@ -12,18 +15,29 @@ export class UserService {
 
   constructor() { }
 
+  getUser() {
+    return this.authService.userSession$.pipe(
+      switchMap(session => {
+        const userQuery = this.supabase.from('users').select('*').eq('supabase_id', session.id).limit(1).single();
+        type User = QueryData<typeof userQuery>;
 
-  async getUser() {
-    const uid = this.authService.getUserSession()?.id;
-    if (!uid) throw new Error("No user connected");
+        const cachedUser = getCached<User>('user');
+        if (cachedUser) {
+          return of(cachedUser);
+        }
 
-    const { data, error } = await this.supabase.from('users').select('id, name, email').eq('supabase_id', uid).limit(1).single();
+        const userQueryPromise = new Promise<User | null>((resolve, reject) => {
+          userQuery.then(({ data, error }) => {
+            if (error) reject(error);
 
-    if (error) {
-      throw error;
-    }
+            setCache('user', data);
+            resolve(data);
+          })
+        })
 
-    return data as IUser;
+        return from(userQueryPromise)
+      })
+    )
   }
 
   async saveName(name: string, userId: number) {
@@ -32,8 +46,6 @@ export class UserService {
       .update({ name })
       .eq('id', userId)
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
   }
 }

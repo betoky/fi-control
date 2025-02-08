@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
+import { filter, map } from 'rxjs/operators';
 import { ButtonModule } from "primeng/button";
 import { Chip } from 'primeng/chip';
 import { Menubar } from 'primeng/menubar';
@@ -17,7 +18,7 @@ import { FirstCharPipe } from '../../pipes/first-char.pipe';
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent {
   items: MenuItem[] = [
     {
       label: 'Dashboard',
@@ -35,12 +36,7 @@ export class LayoutComponent implements OnInit {
       routerLink: '/bank'
     }
   ]
-  username?: string;
-  authService = inject(AuthService);
-  private userService = inject(UserService);
 
-  ngOnInit() {
-    this.userService.getUser()
-      .then(user => this.username = user.name ?? user.email)
-  }
+  username$ = inject(UserService).getUser().pipe(filter(user => user !== null), map(user => user.name ?? user.email));
+  authService = inject(AuthService);
 }
