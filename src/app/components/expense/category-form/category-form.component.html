@@ -1,0 +1,26 @@
+<form #categoryForm="ngForm">
+  <div class="mb-3">
+    <label for="categoryName">Nom de la categorie</label>
+    <input class="w-full" id="categoryName" autocomplete="off"
+      pInputText pSize="small" name="category" required minlength="3" [(ngModel)]="categoryName" />
+  </div>
+
+  @if (categoryName) {
+    <app-chip class='block my-3 text-center' [label]="categoryName" [color]="foregroundColor" [bg]="backgroundColor" />
+  }
+
+  <div class="mb-3 flex justify-between gap-2">
+    <div class="flex flex-col items-center gap-1">
+      <label class="inline-block text-sm" for="color">Couleur de texte</label>
+      <p-colorpicker [(ngModel)]="foregroundColor" name="color" inputId="color" format="hex" styleClass="border-1 border rounded" />
+    </div>
+    <div class="flex flex-col items-center gap-1">
+      <label class="inline-block text-sm" for="bg">Couleur de fond</label>
+      <p-colorpicker [(ngModel)]="backgroundColor" name="bg" inputId="bg" format="hex" styleClass="border-1 border rounded" />
+    </div>
+  </div>
+
+  <p-button (onClick)="addCategorie(); categoryForm.reset()" type="submit" [loading]="isSubmiting" [disabled]="categoryForm.invalid" pRipple variant="outlined" size="small" label="Enregistrer" icon="pi pi-save" styleClass="w-full" />
+</form>
+
+<p-toast />
