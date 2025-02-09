@@ -7,5 +7,10 @@
     <p-fieldset legend="Gestion des catégories" class="w-full">
       <app-category-form />
     </p-fieldset>
+    <div class="mt-4 flex justify-center flex-wrap gap-2">
+      @for (category of categories(); track category.id) {
+      <app-chip [label]="category.name" [bg]="category.bg" [color]="category.color" />
+      }
+    </div>
   </p-card>
 </div>

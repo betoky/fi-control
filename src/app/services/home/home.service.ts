@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { QueryData } from '@supabase/supabase-js';
 import { SupabaseService } from '../supabase/supabase.service';
-import { getCached, setCache } from '../../utils/cache.utility';
+import { cacheSupabaseQuery, getCached, setCache } from '../../utils/cache.utility';
 
 
 @Injectable({
@@ -16,18 +16,7 @@ export class HomeService {
     const homeWithOwner = this.supabase.from('home').select('*, owner:users(*)').maybeSingle();
     type HomeWithOwner = QueryData<typeof homeWithOwner>;
 
-    const cachedData = getCached<HomeWithOwner>('home');
-    if (cachedData) {
-      return cachedData;
-    }
-
-    const {data: home, error} = await homeWithOwner;
-
-    if (error) throw error;
-
-    setCache('home', home);
-
-    return home;
+    return cacheSupabaseQuery<HomeWithOwner>('home', homeWithOwner);
   }
 
   async createHome(name: string, ownerId: number) {
