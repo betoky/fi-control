@@ -4,17 +4,9 @@
       accusamus consequuntur quia aut, eaque deserunt? Amet sequi nobis aut illum a rem alias.</p>
   </p-card>
   <p-card class="mt-5 md:mt-0 block md:w-80 lg:w-96">
-    <p-fieldset legend="Gestion des catégories" class="w-full">
-      <app-category-form />
-    </p-fieldset>
-    <div class="mt-4 flex justify-center flex-wrap gap-2">
-      @for (category of categories(); track category.id) {
-      <app-chip
-        [label]="category.name" [bg]="category.bg" [color]="category.color" [deletable]="true"
-        (delete)="onDeleteCategory(category.id)" [isLoading]="category.id === categoryToDelete()" />
-      }
-    </div>
+    <app-category-form />
+    <app-category-list />
   </p-card>
 </div>
-<p-toast />
-<p-confirmdialog />
+<!-- <p-toast />
+<p-confirmdialog /> -->

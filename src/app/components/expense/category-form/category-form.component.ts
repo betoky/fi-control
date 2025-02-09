@@ -1,15 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ColorPickerModule } from 'primeng/colorpicker';
-import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { FieldsetModule } from 'primeng/fieldset';
+import { InputTextModule } from 'primeng/inputtext';
+import { ToastModule } from 'primeng/toast';
 import { ExpenseService } from '../../../services/expense/expense.service';
 import { ChipComponent } from '../../chip/chip.component';
 
-const PrimeNgImport = [ButtonModule, ColorPickerModule, InputTextModule, ToastModule];
-
+const PrimeNgImport = [ButtonModule, ColorPickerModule, FieldsetModule, InputTextModule, ToastModule];
 
 @Component({
   selector: 'app-category-form',
