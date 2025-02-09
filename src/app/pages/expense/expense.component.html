@@ -9,8 +9,12 @@
     </p-fieldset>
     <div class="mt-4 flex justify-center flex-wrap gap-2">
       @for (category of categories(); track category.id) {
-      <app-chip [label]="category.name" [bg]="category.bg" [color]="category.color" />
+      <app-chip
+        [label]="category.name" [bg]="category.bg" [color]="category.color" [deletable]="true"
+        (delete)="onDeleteCategory(category.id)" [isLoading]="category.id === categoryToDelete()" />
       }
     </div>
   </p-card>
 </div>
+<p-toast />
+<p-confirmdialog />

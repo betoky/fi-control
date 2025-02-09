@@ -34,6 +34,13 @@ export class ExpenseService {
     type Query = QueryData<typeof this.categoriesQuery>;
     return cacheSupabaseQuery<Query>(this.CATEGORIES_KEY, this.categoriesQuery);
   }
+  
+  async deleteCategory(id: number) {
+    const { error } = await this.supabase.from('expense_category').delete().eq('id', id);
+    if (error) throw error;
+    removeCached(this.CATEGORIES_KEY);
+    this.streamCategories();
+  }
 
   private streamCategories() {
     this.getCategories().then(data => this.categories.set(data));

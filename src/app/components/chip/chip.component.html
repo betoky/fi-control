@@ -1,5 +1,11 @@
-<span
-  class="py-1 px-2.5 rounded-lg inline-block text-sm font-semibold break-all"
-  [style.color]="color" [style.backgroundColor]="bg">
+<span [style.color]="color" [style.backgroundColor]="bg"
+  class="py-1 px-2.5 rounded-lg inline-block text-sm font-semibold break-all relative"
+  [class]="deletable ? 'group' : ''">
   {{ label }}
+  <p-button class="absolute top-0 right-0 -translate-y-2 translate-x-2 hidden"
+    [class]="{ 'group-hover:block' : deletable, '!block': isLoading }"
+    styleClass="!text-[.4rem] !leading-none !w-6 !h-6"
+    size="small" icon="pi pi-times" severity="danger"
+    [text]="true" [rounded]="true" [loading]="isLoading"
+    (onClick)="deletable && delete.next()" />
 </span>
