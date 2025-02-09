@@ -30,6 +30,16 @@ export class ExpenseService {
     this.streamCategories();
   }
 
+  async updateExpenseCategory(id: number, name: string, color: string, bg: string) {
+    const home = await this.homeService.getHome();
+    if (!home) throw new Error("Not allowed to update expense category");
+
+    const { error } = await this.supabase.from('expense_category').update({ name, bg, color }).eq('id', id);
+    if (error) throw error;
+    removeCached(this.CATEGORIES_KEY);
+    this.streamCategories();
+  }
+
   async getCategories() {
     type Query = QueryData<typeof this.categoriesQuery>;
     return cacheSupabaseQuery<Query>(this.CATEGORIES_KEY, this.categoriesQuery);
