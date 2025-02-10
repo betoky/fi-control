@@ -83,7 +83,7 @@ export class ExpenseFormComponent {
         const { date, items } = this.form.getRawValue();
         const expenses = items.map(item => {
           const { category, ...data } = item as Item;
-          return { ...data, date: date!.toLocaleDateString(), category_id: category?.id ?? null, home_id: home!.id }
+          return { ...data, date: date!.toISOString(), category_id: category?.id ?? null, home_id: home!.id }
         })
         await this.service.addExpenses(expenses);
         this.saved.next();

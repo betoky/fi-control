@@ -42,6 +42,7 @@ export class ExpenseService {
       query.gte('date', date[0]).lte('date', date[1]);
     }
 
+    query.order('date', { ascending: false });
 
     const { data: expenses, error } = await query;
     if (error) throw error;

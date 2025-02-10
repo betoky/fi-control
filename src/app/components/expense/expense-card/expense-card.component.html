@@ -1,0 +1,16 @@
+
+@let category = expense.category;
+<p-card>
+  <div class="grid grid-cols-2 md:grid-cols-3 items-center gap-1.5">
+    <div class="flex flex-col gap-1">
+      <h3 class="font-semibold text-xl">{{ expense.title }}</h3>
+      <span class="text-neutral-500 text-sm first-letter:uppercase">{{ expense.date | date }}</span>
+    </div>
+    <div class="w-full text-end md:text-center">
+      @if (category) {
+        <app-chip class="ms-2" [label]="category.name" [bg]="category.bg" [color]="category.color" />
+      }
+    </div>
+    <div class="text-end col-span-2 md:col-span-1 font-bold text-xl">{{ expense.amount | currency }}</div>
+  </div>
+</p-card>

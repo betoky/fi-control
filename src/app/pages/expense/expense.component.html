@@ -1,21 +1,7 @@
 <div class="lg:flex lg:gap-3 justify-center">
   <div class="lg:flex-1 flex flex-col gap-2">
     @for (expense of expenses; track expense.id) {
-      @let category = expense.category;
-      <p-card>
-        <div class="flex justify-between items-center gap-1.5">
-          <div class="w-2/4 flex flex-col gap-1">
-            <h3 class="font-semibold text-xl">{{ expense.title }}</h3>
-            <span class="text-neutral-500 text-sm">{{ expense.date | date }}</span>
-          </div>
-          <div class="w-1/4 text-center">
-            @if (category) {
-              <app-chip class="ms-2" [label]="category.name" [bg]="category.bg" [color]="category.color" />
-            }
-          </div>
-          <div class="w-1/4 text-end font-bold text-xl">{{ expense.amount | currency }}</div>
-        </div>
-      </p-card>
+      <app-expense-card [expense]="expense" />
     }
   </div>
   <p-card class="mt-5 lg:mt-0 block lg:w-96">
