@@ -1,12 +1,30 @@
-<div class="md:flex md:gap-3">
-  <p-card class="md:flex-1">
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ullam ab voluptatem blanditiis illum nam ipsa ad
-      accusamus consequuntur quia aut, eaque deserunt? Amet sequi nobis aut illum a rem alias.</p>
-  </p-card>
-  <p-card class="mt-5 md:mt-0 block md:w-80 lg:w-96">
+<div class="lg:flex lg:gap-3 justify-center">
+  <div class="lg:flex-1 flex flex-col gap-2">
+    @for (expense of expenses; track expense.id) {
+      @let category = expense.category;
+      <p-card>
+        <div class="flex justify-between items-center gap-1.5">
+          <div class="w-2/4 flex flex-col gap-1">
+            <h3 class="font-semibold text-xl">{{ expense.title }}</h3>
+            <span class="text-neutral-500 text-sm">{{ expense.date | date }}</span>
+          </div>
+          <div class="w-1/4 text-center">
+            @if (category) {
+              <app-chip class="ms-2" [label]="category.name" [bg]="category.bg" [color]="category.color" />
+            }
+          </div>
+          <div class="w-1/4 text-end font-bold text-xl">{{ expense.amount | currency }}</div>
+        </div>
+      </p-card>
+    }
+  </div>
+  <p-card class="mt-5 lg:mt-0 block lg:w-96">
+    <p-button size="large" [styleClass]="'mb-4 w-full'" label="Ajouter une dépense" icon="pi pi-add" (onClick)="displayForm = true" />
     <app-category-form />
     <app-category-list />
   </p-card>
 </div>
-<!-- <p-toast />
-<p-confirmdialog /> -->
+
+<p-drawer [(visible)]="displayForm" header="Ajouter une dépense" position="right" [styleClass]="'lg:!w-3/4 xl:!w-2/3 2xl:!w-1/2'">
+  <app-expense-form (saved)="displayForm = false; refreshData()" />
+</p-drawer>

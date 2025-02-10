@@ -1,0 +1,52 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <p-floatlabel class="my-3" variant="on">
+    <p-datepicker inputId="date" formControlName="date" showIcon iconDisplay="input" dateFormat="dd.mm.yy"/>
+    <label for="date">Date</label>
+  </p-floatlabel>
+
+  <div formArrayName="items">
+    @let categorieses = categories();
+    @for (item of items.controls; track $index) {
+      <div [formGroupName]="$index" class="my-4 flex flex-col lg:flex-row lg:justify-between lg:items-center gap-2">
+          <p-floatlabel variant="on">
+            <input class="w-full" type="text" pInputText autocomplete="off" id="title" formControlName='title' />
+            <label for="title">Titre</label>
+          </p-floatlabel>
+
+          <p-floatlabel variant="on">
+            <p-inputnumber [inputStyleClass]="'w-full'" formControlName='amount' inputId="amount" mode="decimal" suffix=" Ar"
+              [minFractionDigits]="2" [maxFractionDigits]="2"/>
+            <label for="amount">Valeur</label>
+          </p-floatlabel>
+  
+          <p-floatlabel variant="on">
+            <p-inputnumber [inputStyleClass]="'!w-24 !block'"  formControlName='quantity' inputId="quantity"
+              [minFractionDigits]="1" [maxFractionDigits]="2" />
+            <label for="quantity">Quantité</label>
+          </p-floatlabel>
+
+          <p-floatlabel variant="on">
+            <input class="w-24 block" pInputText formControlName='unit' inputId="unit" />
+            <label for="unit">Unité</label>
+          </p-floatlabel>
+  
+          @if (categorieses && categorieses.length > 0) {
+          <p-floatlabel class="w-full md:w-60" variant="on">
+            <p-select [options]="categorieses!" optionLabel="name" class="w-full"
+            [showClear]="true" [filter]="true" filterBy="name" [checkmark]="true"
+            [formControlName]='"category"' inputId="category"/>
+            <label for="category">Choisir une catégorie</label>
+          </p-floatlabel>
+        }
+        <button class="shrink-0" pButton severity="danger" type="button" [text]="true" icon="pi pi-trash" (click)="removeItem($index)"></button>
+
+      </div>
+    }
+  </div>
+
+  <p class="text-center"><button pButton type="button" [rounded]="true" severity="secondary" icon="pi pi-plus" (click)="addItem()"></button></p>
+  
+  <p-button type="submit" class="mt-4 text-end block"
+    icon="pi pi-cart-arrow-down" label="Enregistrer"
+    [disabled]="form.invalid" [loading]="submitting" />
+</form>
