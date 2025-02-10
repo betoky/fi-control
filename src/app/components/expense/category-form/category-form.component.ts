@@ -1,30 +1,28 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
 import { PanelModule } from 'primeng/panel';
 import { SelectChangeEvent, SelectModule } from 'primeng/select';
-import { ToastModule } from 'primeng/toast';
-import { ExpenseService } from '../../../services/expense/expense.service';
 import { ChipComponent } from '../../chip/chip.component';
+import { CategoryService } from '../../../services/expense/category.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
-const PrimeNgImport = [ButtonModule, ColorPickerModule, FieldsetModule, InputTextModule, PanelModule, SelectModule, ToastModule];
+const PrimeNgImport = [ButtonModule, ColorPickerModule, FieldsetModule, InputTextModule, PanelModule, SelectModule];
 
 @Component({
   selector: 'app-category-form',
   imports: [FormsModule, ...PrimeNgImport, ChipComponent],
   templateUrl: './category-form.component.html',
-  styleUrl: './category-form.component.scss',
-  providers: [MessageService]
+  styleUrl: './category-form.component.scss'
 })
 export class CategoryFormComponent {
   private readonly DEFAUTL_COLOR = '#000000';
   private readonly DEFAUTL_BG = '#FFFFFF';
-  private service = inject(ExpenseService);
-  private messageService = inject(MessageService);
+  private service = inject(CategoryService);
+  private alertService = inject(AlertService);
   private toEdit: number| null = null;
 
   categoryName?: string;
@@ -46,10 +44,16 @@ export class CategoryFormComponent {
         } else {
           await this.service.createExpenseCategory(value, this.foregroundColor, this.backgroundColor);
         }
-        this.alert(this.toEdit ? 'La catégorie a été modifiée' : 'Une catégorie a été créée', 'success');
+        this.alertService.alert({
+          message: this.toEdit ? 'La catégorie a été modifiée' : 'Une catégorie a été créée',
+          type: 'success'
+        });
         form.resetForm();
       } catch (error) {
-        this.alert(this.toEdit ? 'La modification de catégorie a échouée' : "La création de catégorie a échouée", 'error');
+        this.alertService.alert({
+          message: this.toEdit ? 'La modification de catégorie a échouée' : "La création de catégorie a échouée",
+          type: 'error'
+        });
       } finally {
         this.isSubmiting = false;
       }
@@ -71,14 +75,5 @@ export class CategoryFormComponent {
       this.foregroundColor = this.DEFAUTL_COLOR;
       this.backgroundColor = this.DEFAUTL_BG;
     }
-  }
-
-  private alert(message: string, type: 'error' | 'success') {
-    this.messageService.add({
-      severity: type,
-      summary: type === 'error' ? 'Erreur' : 'Succès',
-      detail: message,
-      life: 2500
-    })
   }
 }

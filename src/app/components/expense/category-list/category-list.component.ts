@@ -1,24 +1,25 @@
 import { Component, inject, signal } from '@angular/core';
-import { MessageService, ConfirmationService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ToastModule } from 'primeng/toast';
 import { ChipComponent } from '../../chip/chip.component';
-import { ExpenseService } from '../../../services/expense/expense.service';
+import { CategoryService } from '../../../services/expense/category.service';
+import { AlertService } from '../../../services/alert/alert.service';
 
-const PrimeNgImport = [ConfirmDialogModule, ToastModule];
+const PrimeNgImport = [ConfirmDialogModule];
 
 @Component({
   selector: 'app-category-list',
   imports: [ChipComponent, ...PrimeNgImport],
   templateUrl: './category-list.component.html',
-  styleUrl: './category-list.component.scss'
+  styleUrl: './category-list.component.scss',
+  providers: [ConfirmationService]
 })
 export class CategoryListComponent {
-  private expenseService = inject(ExpenseService);
-  private messageService = inject(MessageService);
+  private service = inject(CategoryService);
+  private alertService = inject(AlertService);
   private confirmation = inject(ConfirmationService);
 
-  categories = this.expenseService.categories;
+  categories = this.service.categories;
   categoryToDelete = signal<number | null>(null);
 
   async onDeleteCategory(id: number) {
@@ -48,30 +49,19 @@ export class CategoryListComponent {
   private async processToRemoveCategory(id: number) {
     try {
       this.categoryToDelete.set(id);
-      await this.expenseService.deleteCategory(id);
-      this.success("Une catégorie a été supprimée");
+      await this.service.deleteCategory(id);
+      this.alertService.alert({
+        message: "Une catégorie a été supprimée",
+        type: 'success'
+      });
     } catch (error) {
-      this.failed("La suppression de catégorie est échouée");
+      this.alertService.alert({
+        message: "La suppression de catégorie est échouée",
+        type: 'error'
+      });
     } finally {
       this.categoryToDelete.set(null);
     }
   }
 
-  private success(message: string) {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Succès',
-      detail: message,
-      life: 2500
-    })
-  }
-
-  private failed(message: string) {
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Erreur',
-      detail: message,
-      life: 2500
-    })
-  }
 }
