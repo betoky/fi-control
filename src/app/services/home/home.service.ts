@@ -26,7 +26,7 @@ export class HomeService {
 
   async hasHome() {
     const cached = getCached<boolean>('hasHome');
-    if (cached !== null) {
+    if (cached !== null || cached === false) {
       return cached;
     }
     const { data, error } = await this.supabase.from('home').select('*').maybeSingle();
