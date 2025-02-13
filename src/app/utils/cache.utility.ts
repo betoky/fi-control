@@ -8,6 +8,9 @@ export function getCached<T>(key: string) {
   if (cachedData && expireAt && now < Number(expireAt)) {
     return JSON.parse(cachedData) as T;
   }
+  if (Number(expireAt) < now) {
+    removeCached(key);
+  }
   return null;
 }
 

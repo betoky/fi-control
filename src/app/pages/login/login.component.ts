@@ -11,6 +11,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 
 import { AuthService } from '../../services/auth/auth.service';
 import { AlertService } from '../../services/alert/alert.service';
+import { HomeService } from '../../services/home/home.service';
 
 const PrimeNgImport = [ButtonModule, CheckboxModule, FloatLabel, InputTextModule, PasswordModule];
 
@@ -25,6 +26,7 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private alertService = inject(AlertService);
+  private homeService = inject(HomeService);
   private authSubscription?: Subscription;
 
   loginForm = this.fb.nonNullable.group({
@@ -51,6 +53,7 @@ export class LoginComponent {
     
     if (this.loginForm.valid) {
       try {
+        this.homeService.clearCachedHome();
         const { email, password } = this.loginForm.getRawValue();
         await this.authService.login(email, password);
       } catch (error) {
