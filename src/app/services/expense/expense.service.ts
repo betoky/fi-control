@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { SupabaseService } from '../supabase/supabase.service';
+import { Expense } from '../../models/expense';
 
 type ExpenseFilter = {
   q?: string;
@@ -8,7 +9,7 @@ type ExpenseFilter = {
   amount?: [string, string];
 }
 
-type ExpenseDTO = { date: string; category_id: number | null; home_id: number; title: string; amount: number; quantity: number | null; unit: number | null; }
+type ExpenseDTO = { date: string; category_id: number | null; home_id: number; title: string; amount: number; quantity: number | null; unit: string | null; }
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +18,9 @@ export class ExpenseService {
   private supabase = inject(SupabaseService).getInstance();
 
   async findAll({ q, amount, category, date }: ExpenseFilter) {
-
     const query = this.supabase
       .from('expense')
-      .select("*, category:expense_category(color, bg, name)");
+      .select("*, category:expense_category(*)");
 
     if (q) {
       if (isNaN(parseFloat(q))) {
@@ -52,6 +52,17 @@ export class ExpenseService {
 
   async addExpenses(expenses: ExpenseDTO[]) {
     const { error } = await this.supabase.from('expense').insert(expenses);
+    if (error) throw error;
+  }
+
+  async updateExpense(expense: Expense) {
+    const {category, id, ...data} = expense;
+    const { error } = await this.supabase.from('expense').update({...data, category_id: category?.id}).eq('id', id);
+    if (error) throw error;
+  }
+
+  async deleteExpense(id: number) {
+    const { error } = await this.supabase.from('expense').delete().eq('id', id);
     if (error) throw error;
   }
 

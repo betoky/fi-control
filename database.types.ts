@@ -19,6 +19,7 @@ export type Database = {
           id: number
           quantity: number | null
           title: string
+          unit: string | null
         }
         Insert: {
           amount: number
@@ -29,6 +30,7 @@ export type Database = {
           id?: number
           quantity?: number | null
           title: string
+          unit?: string | null
         }
         Update: {
           amount?: number
@@ -39,6 +41,7 @@ export type Database = {
           id?: number
           quantity?: number | null
           title?: string
+          unit?: string | null
         }
         Relationships: [
           {

@@ -1,7 +1,11 @@
 :host {
   --p-card-body-padding: .5rem;
 
-  @media (min-width: 992px) {
+  @media (min-width: 640px) {
+    --p-card-body-padding: .5rem .75rem;
+  }
+
+  @media (min-width: 1024px) {
     --p-card-body-padding: .75rem .975rem;
   }
 }

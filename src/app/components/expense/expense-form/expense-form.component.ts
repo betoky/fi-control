@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -7,26 +7,10 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 
-import { CategoryService } from '../../../services/expense/category.service';
 import { ExpenseService } from '../../../services/expense/expense.service';
 import { HomeService } from '../../../services/home/home.service';
 import { AlertService } from '../../../services/alert/alert.service';
-
-
-type Category = {
-  id: number;
-  name: string;
-  color: string;
-  bg: string;
-}
-
-type Item = {
-  title: string;
-  amount: number;
-  quantity: number | null;
-  unit: number | null;
-  category: Category | null;
-}
+import { Category, Expense } from '../../../models/expense';
 
 const PrimeNgImport = [ButtonModule, DatePickerModule, FloatLabel, InputNumberModule, InputTextModule, SelectModule];
 
@@ -39,13 +23,12 @@ const PrimeNgImport = [ButtonModule, DatePickerModule, FloatLabel, InputNumberMo
 export class ExpenseFormComponent {
   private fb = inject(FormBuilder);
   private alertService = inject(AlertService);
-  private categoryService = inject(CategoryService);
   private service = inject(ExpenseService);
   private homeService = inject(HomeService);
 
+  @Input() categories: Category[] | null = null;
   @Output() saved = new EventEmitter<void>();
 
-  categories = this.categoryService.categories;
   submitting = false;
 
   form = this.fb.group({
@@ -82,7 +65,7 @@ export class ExpenseFormComponent {
         const home = await this.homeService.getHome();
         const { date, items } = this.form.getRawValue();
         const expenses = items.map(item => {
-          const { category, ...data } = item as Item;
+          const { category, ...data } = item as Expense;
           return { ...data, date: date!.toISOString(), category_id: category?.id ?? null, home_id: home!.id }
         })
         await this.service.addExpenses(expenses);

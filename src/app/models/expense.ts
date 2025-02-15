@@ -1,3 +1,18 @@
-import { Tables } from "../../../database.types";
+export type Category = {
+  id: number;
+  name: string;
+  color: string;
+  bg: string;
+}
 
-export type ExpenseWithCategory = Tables<'expense'> & { category: { color: string; bg: string; name: string } | null };
+
+export type Expense = {
+  id: number;
+  title: string;
+  amount: number;
+  date: string;
+  quantity: number | null;
+  unit: string | null;
+  category: Category | null;
+  created_at: string;
+}
