@@ -50,8 +50,9 @@ export class ExpenseComponent implements OnInit {
 
   currentDate: Date = new Date();
   rangeDate?: [Date, Date];
-  frequency: Periodicity = 'daily';
+  frequency: Periodicity = 'weekly';
   isRangeMode = false;
+  isLoading: boolean = false;
 
   ngOnInit(): void {
     const frequency = this.route.snapshot.queryParamMap.get('f');
@@ -70,7 +71,7 @@ export class ExpenseComponent implements OnInit {
         this.currentDate = new Date(+timestamp);
       }
     }
-    
+
     this.refreshCurrentExpenses();
   }
 
@@ -109,7 +110,7 @@ export class ExpenseComponent implements OnInit {
 
   updateFrequencyState(value: Periodicity) {
     this.frequency = value;
-    const queryParam: Params = { 'f': value, 'd': this.currentDate.valueOf()};
+    const queryParam: Params = { 'f': value, 'd': this.currentDate.valueOf() };
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: queryParam
@@ -118,7 +119,7 @@ export class ExpenseComponent implements OnInit {
 
   updateCurrentDateState(value: Date) {
     this.currentDate = value;
-    const queryParam: Params = { 'f': this.frequency, 'd': value.valueOf()};
+    const queryParam: Params = { 'f': this.frequency, 'd': value.valueOf() };
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: queryParam
@@ -142,6 +143,7 @@ export class ExpenseComponent implements OnInit {
   }
 
   private fetchExpenses([start, end]: [Date, Date]) {
+    this.isLoading = true;
     this.service.findAll({ date: [start.toISOString(), end.toISOString()] })
       .then(data => this.expenses = data)
       .catch(() => {
@@ -150,6 +152,7 @@ export class ExpenseComponent implements OnInit {
           message: "OUPS!! Une erreur s'est produite."
         })
       })
+      .finally(() => this.isLoading = false)
   }
 
 }

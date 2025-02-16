@@ -1,6 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <p-floatlabel class="my-3" variant="on">
-    <p-datepicker inputId="date" formControlName="date" showIcon iconDisplay="input" dateFormat="dd.mm.yy"/>
+    <p-datepicker inputId="date" formControlName="date" showIcon iconDisplay="input" [showTime]="true" dateFormat="dd-mm-yy"/>
     <label for="date">Date</label>
   </p-floatlabel>
 
@@ -37,7 +37,7 @@
             <label for="category">Choisir une catégorie</label>
           </p-floatlabel>
         }
-        <button class="shrink-0" pButton severity="danger" type="button" [text]="true" icon="pi pi-trash" (click)="removeItem($index)"></button>
+        <button class="shrink-0" pButton severity="danger" type="button" [text]="true" icon="pi pi-minus" (click)="removeItem($index)"></button>
 
       </div>
     }

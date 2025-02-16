@@ -32,7 +32,7 @@ export class DateFilterComponent implements OnInit {
   private readonly YEARLY_FORMAT = 'yy';
   private readonly RANGE_FORMAT = 'dd/mm/yy';
 
-  @Input() frequency: Periodicity = 'daily';
+  @Input() frequency: Periodicity = 'weekly';
   @Input() simpleDate?: Date;
   @Input() rangeDate?: [Date, Date];
   @Output() changeSimple = new EventEmitter<Date>();

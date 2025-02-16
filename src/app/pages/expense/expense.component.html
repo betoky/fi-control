@@ -9,7 +9,10 @@
       (changeSimple)="updateCurrentDateState($event)"
       (changeRange)="onFilterByDateRange($event)"
       (changeFrequency)="updateFrequencyState($event)"/>
+
     @if (expenses) {
+      @let loadingClass = isLoading ? 'visible opacity-0' : 'invisible opacity-100' ;
+      <p-skeleton [class]="'transition-opacity pointer-events-none ' + loadingClass" height="3px"></p-skeleton>
       @for (expense of expenses; track expense.id) {
         <app-expense-card [expense]="expense" (delete)="onDelete(expense.id)" (edit)="onEdit(expense)" />
       }
