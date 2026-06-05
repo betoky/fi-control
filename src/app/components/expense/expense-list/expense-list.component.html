@@ -1,0 +1,15 @@
+@if (expenses()) {
+  @for (expense of expenses(); track expense.id; let first = $first) {
+    <app-expense-card class="block" [class.mt-2]="!first" [expense]="expense" (delete)="onDelete(expense.id)" (edit)="onEdit(expense)" />
+  }
+  @empty {
+    <p-card class="mt-2">
+      <p class="text-lg grid min-h-60 place-items-center">Pas de dépenses</p>
+    </p-card>
+  }
+}
+@else {
+  @for (i of [0, 1, 2, 3, 5]; track i; let first = $first) {
+    <p-skeleton class="block mt-2" [class.mt-2]="!first" height="5rem" />
+  }
+}

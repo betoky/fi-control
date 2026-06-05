@@ -1,15 +1,8 @@
 import { DAILY_FORMAT, MONTHLY_FORMAT, Periodicity, WEEKLY_FORMAT, YEARLY_FORMAT } from "../models/date";
 
 const getLastHours = (date: Date) => {
-  let result = new Date(date);
-  
+  const result = new Date(date);
   result.setHours(23, 59, 59, 999);
-
-  const toDay = new Date();
-  if (result > toDay) {
-    result = toDay;
-  }
-
   return result;
 }
 

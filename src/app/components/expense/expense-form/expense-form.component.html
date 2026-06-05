@@ -29,9 +29,10 @@
           <label for="unit">Unité</label>
         </p-floatlabel>
 
-        @if (categories && categories.length > 0) {
+        @let catData = categories();
+        @if (catData && catData.length > 0) {
           <p-floatlabel class="w-full md:w-60" variant="on">
-            <p-select [options]="categories" optionLabel="name" class="w-full"
+            <p-select [options]="catData" optionLabel="name" class="w-full"
             [showClear]="true" [filter]="true" filterBy="name" [checkmark]="true"
             [formControlName]='"category"' inputId="category"/>
             <label for="category">Choisir une catégorie</label>

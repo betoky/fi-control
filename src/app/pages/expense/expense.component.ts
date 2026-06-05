@@ -1,25 +1,19 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { take } from 'rxjs/operators';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DrawerModule } from 'primeng/drawer';
-import { SkeletonModule } from 'primeng/skeleton';
+import { Component, effect, inject } from '@angular/core';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { Drawer } from 'primeng/drawer';
+import { Skeleton } from "primeng/skeleton";
 import { AlertService } from '../../services/alert/alert.service';
-import { CategoryService } from '../../services/expense/category.service';
+import { DateFilterService } from '../../services/date/date-filter.service';
 import { ExpenseService } from '../../services/expense/expense.service';
 import { CategoryFormComponent } from '../../components/expense/category-form/category-form.component';
 import { CategoryListComponent } from '../../components/expense/category-list/category-list.component';
 import { DateFilterComponent } from '../../components/date-filter/date-filter.component';
-import { ExpenseEditComponent } from '../../components/expense/expense-edit/expense-edit.component';
 import { ExpenseFormComponent } from '../../components/expense/expense-form/expense-form.component';
-import { ExpenseCardComponent } from "../../components/expense/expense-card/expense-card.component";
+import { ExpenseListComponent } from '../../components/expense/expense-list/expense-list.component';
 import { Expense } from '../../models/expense';
-import { isPeriodictyType, Periodicity } from '../../models/date';
-import { getRangeOf } from '../../utils/date.utility';
 
-const PrimeNgImport = [ButtonModule, CardModule, DrawerModule, SkeletonModule];
+const PrimeNgImport = [Button, Card, Drawer, Skeleton];
 
 @Component({
   selector: 'app-expense',
@@ -27,124 +21,29 @@ const PrimeNgImport = [ButtonModule, CardModule, DrawerModule, SkeletonModule];
     CategoryFormComponent,
     CategoryListComponent,
     DateFilterComponent,
-    ExpenseCardComponent,
     ExpenseFormComponent,
-    ...PrimeNgImport
-  ],
+    ExpenseListComponent,
+    ...PrimeNgImport,
+],
   templateUrl: './expense.component.html',
-  styleUrl: './expense.component.scss',
-  providers: [DialogService]
+  styleUrl: './expense.component.scss'
 })
-export class ExpenseComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
+export class ExpenseComponent {
   private alertService = inject(AlertService);
   private service = inject(ExpenseService);
-  public dialogService = inject(DialogService);
-
-  displayCreateForm = false;
-  editDialogRef?: DynamicDialogRef;
+  private dateFilter = inject(DateFilterService);
 
   expenses?: Expense[];
-  categories = inject(CategoryService).categories;
+  displayCreateForm = false;
+  loading = false;
 
-  currentDate: Date = new Date();
-  rangeDate?: [Date, Date];
-  frequency: Periodicity = 'weekly';
-  isRangeMode = false;
-  isLoading: boolean = false;
-
-  ngOnInit(): void {
-    const frequency = this.route.snapshot.queryParamMap.get('f');
-    const timestamp = this.route.snapshot.queryParamMap.get('d');
-    const startTimeStamp = this.route.snapshot.queryParamMap.get('s');
-    const endTimeStamp = this.route.snapshot.queryParamMap.get('e');
-
-    if (startTimeStamp && endTimeStamp && !isNaN(+startTimeStamp) && !isNaN(+endTimeStamp)) {
-      this.isRangeMode = true;
-      this.rangeDate = [new Date(+startTimeStamp), new Date(+endTimeStamp)]
-    } else {
-      if (frequency && isPeriodictyType(frequency)) {
-        this.frequency = frequency;
-      }
-      if (timestamp && !isNaN(+timestamp)) {
-        this.currentDate = new Date(+timestamp);
-      }
-    }
-
-    this.refreshCurrentExpenses();
+  constructor() {
+    effect(() => this.loadExpenses())
   }
 
-  onEdit(expense: Expense) {
-    this.editDialogRef = this.dialogService.open(ExpenseEditComponent, {
-      data: {
-        expense,
-        categories: this.categories()
-      },
-      header: 'Modification',
-      modal: true,
-      styleClass: "mx-4 w-full md:w-3/4 lg:w-1/2",
-      contentStyle: { overflowY: 'visible' }
-    })
-
-    this.editDialogRef.onClose.pipe(take(1)).subscribe({
-      next: saved => saved && this.refreshCurrentExpenses()
-    })
-  }
-
-  onDelete(id: number) {
-    this.service.deleteExpense(id)
-      .then(() => this.expenseDeleted())
-      .catch(() => this.alertService.alert({ message: "La dépense n'a pas pu être supprimée", type: 'error' }))
-  }
-
-  private expenseDeleted() {
-    this.alertService.alert({ message: "Une dépense a été supprimée", type: 'success' });
-    this.refreshCurrentExpenses();
-  }
-
-  onFilterByDateRange(range: [Date, Date]) {
-    if (this.isRangeMode) this.updateRangeSateOfRangeMode(range);
-    this.fetchExpenses(range);
-  }
-
-  updateFrequencyState(value: Periodicity) {
-    this.frequency = value;
-    const queryParam: Params = { 'f': value, 'd': this.currentDate.valueOf() };
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: queryParam
-    })
-  }
-
-  updateCurrentDateState(value: Date) {
-    this.currentDate = value;
-    const queryParam: Params = { 'f': this.frequency, 'd': value.valueOf() };
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: queryParam
-    })
-  }
-
-  private updateRangeSateOfRangeMode([start, end]: [Date, Date]) {
-    const queryParams: Params = { s: start.valueOf(), e: end.valueOf() }
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-    })
-  }
-
-  refreshCurrentExpenses() {
-    if (this.isRangeMode && this.rangeDate) {
-      this.fetchExpenses(this.rangeDate);
-    } else {
-      this.fetchExpenses(getRangeOf(this.frequency, this.currentDate));
-    }
-  }
-
-  private fetchExpenses([start, end]: [Date, Date]) {
-    this.isLoading = true;
-    this.service.findAll({ date: [start.toISOString(), end.toISOString()] })
+  loadExpenses() {
+    this.loading = true;
+    this.service.findAll({ date: this.dateFilter.rangeDate()})
       .then(data => this.expenses = data)
       .catch(() => {
         this.alertService.alert({
@@ -152,7 +51,7 @@ export class ExpenseComponent implements OnInit {
           message: "OUPS!! Une erreur s'est produite."
         })
       })
-      .finally(() => this.isLoading = false)
+      .finally(() => this.loading = false);
   }
 
 }

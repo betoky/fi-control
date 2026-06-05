@@ -1,32 +1,9 @@
 <div class="lg:flex lg:gap-3 lg:justify-center lg:items-start">
-  <div class="lg:flex-1 flex flex-col gap-2">
-    <app-date-filter
-      [isRangeMode]="isRangeMode"
-      [simpleDate]="currentDate"
-      [rangeDate]="rangeDate"
-      [frequency]="frequency"
-      (changeMode)="isRangeMode = $event"
-      (changeSimple)="updateCurrentDateState($event)"
-      (changeRange)="onFilterByDateRange($event)"
-      (changeFrequency)="updateFrequencyState($event)"/>
-
-    @if (expenses) {
-      @let loadingClass = isLoading ? 'visible opacity-0' : 'invisible opacity-100' ;
-      <p-skeleton [class]="'transition-opacity pointer-events-none ' + loadingClass" height="3px"></p-skeleton>
-      @for (expense of expenses; track expense.id) {
-        <app-expense-card [expense]="expense" (delete)="onDelete(expense.id)" (edit)="onEdit(expense)" />
-      }
-      @empty {
-        <p-card>
-          <p class="text-center text-lg">Pas de dépenses</p>
-        </p-card>
-      }
-    }
-    @else {
-      @for (i of [0, 1, 2, 3]; track i) {
-        <p-skeleton height="5rem"/>
-      }
-    }
+  <div class="lg:flex-1 flex flex-col">
+    <app-date-filter class="lg:sticky top-[70px] z-50"/>
+    @let loadingClass = loading ? "visible opacity-100" : "invisible opacity-0" ;
+    <p-skeleton [class]="'my-1 mx-auto block w-11/12 transition-opacity pointer-events-none ' + loadingClass" height="3px"></p-skeleton>
+    <app-expense-list [expenses]='expenses' (refresh)="loadExpenses()" />
   </div>
   <p-card class="mt-5 block lg:mt-0 lg:w-96 lg:sticky top-[70px]">
     <p-button size="large" [styleClass]="'mb-4 w-full'" label="Ajouter une dépense" icon="pi pi-add" (onClick)="displayCreateForm = true" />
@@ -36,5 +13,5 @@
 </div>
 
 <p-drawer [(visible)]="displayCreateForm" header="Ajouter une dépense" position="right" [styleClass]="'lg:!w-3/4 xl:!w-2/3 2xl:!w-1/2'">
-  <app-expense-form [categories]="categories()" (saved)="displayCreateForm = false; refreshCurrentExpenses()" />
+  <app-expense-form (saved)="displayCreateForm = false; loadExpenses()" />
 </p-drawer>

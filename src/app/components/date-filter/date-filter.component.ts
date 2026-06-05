@@ -43,12 +43,13 @@ export class DateFilterComponent {
     return this.service.isRangeMode() ? [start, end] : start;
   });
 
-  onSelect(value: Date | [Date, Date]) {
+  onSelect(value: Date | [Date, Date|null]) {
     if (!Array.isArray(value)) {
       this.service.selectDate(value);
       return
     }
-    value[1] && this.service.selectRange(value);
+    const [a, b] = value;
+    b && this.service.selectRange([a, b]);
   }
 
   private changeDpView(frequency: Periodicity, isRange: boolean) {
