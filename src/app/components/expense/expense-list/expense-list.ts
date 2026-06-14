@@ -13,10 +13,10 @@ import { AlertService } from '../../../services/alert/alert.service';
 @Component({
   selector: 'app-expense-list',
   imports: [CardModule, ExpenseCardComponent, SkeletonModule],
-  templateUrl: './expense-list.component.html',
+  templateUrl: './expense-list.html',
   providers: [DialogService]
 })
-export class ExpenseListComponent {
+export class ExpenseList {
   @Output() refresh = new EventEmitter<void>();
 
   expenses = input<Expense[]>();

@@ -11,7 +11,7 @@ import { CategoryListComponent } from '../../components/expense/category-list/ca
 import { DateFilter } from '../../components/date/date-filter';
 import { ExpenseAnnualStat } from '../../components/chart/expense-annual-stat';
 import { ExpenseFormComponent } from '../../components/expense/expense-form/expense-form.component';
-import { ExpenseListComponent } from '../../components/expense/expense-list/expense-list.component';
+import { ExpenseList } from '../../components/expense/expense-list/expense-list';
 import { ExpenseSummary } from '../../components/chart/expense-summary';
 import { AnnualTotal, Expense as ExpenseType } from '../../models/expense';
 import { Periodicity } from '../../models/date';
@@ -26,7 +26,7 @@ const PrimeNgImport = [Button, Card, Drawer, Skeleton];
     DateFilter,
     ExpenseAnnualStat,
     ExpenseFormComponent,
-    ExpenseListComponent,
+    ExpenseList,
     ExpenseSummary,
     ...PrimeNgImport,
   ],
