@@ -14,7 +14,9 @@ export class CategoryService {
 
   private categoriesQuery = this.supabase.from('expense_category').select('*').order('name', { ascending: true });
 
-  categories = signal<QueryData<typeof this.categoriesQuery> | null>(null)
+  private _categories = signal<QueryData<typeof this.categoriesQuery> | null>(null);
+
+  categories = this._categories.asReadonly();
 
   constructor() {
     this.streamCategories();
@@ -53,6 +55,6 @@ export class CategoryService {
   }
 
   private streamCategories() {
-    this.getCategories().then(data => this.categories.set(data));
+    this.getCategories().then(data => this._categories.set(data));
   }
 }

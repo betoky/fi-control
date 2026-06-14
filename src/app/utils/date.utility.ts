@@ -1,6 +1,12 @@
-import { Periodicity } from "../models/date";
+import { DAILY_FORMAT, MONTHLY_FORMAT, Periodicity, WEEKLY_FORMAT, YEARLY_FORMAT } from "../models/date";
 
-export function getStartOfWeek(date: Date): Date {
+const getLastHours = (date: Date) => {
+  const result = new Date(date);
+  result.setHours(23, 59, 59, 999);
+  return result;
+}
+
+export const getStartOfWeek = (date: Date): Date => {
   const start = new Date(date);
   const day = start.getDay();
   const diffToMonday = day === 0 ? - 6 : 1 - day; // day === 0 <=> sunday, then go back to 6 days to get the day of monday
@@ -10,58 +16,39 @@ export function getStartOfWeek(date: Date): Date {
   return start;
 }
 
-export function getDailyRange(date: Date): [Date, Date] {
+export const getDailyRange = (date: Date): [Date, Date] => {
   const start = new Date(date);
   start.setHours(0, 0, 0, 0);
 
-  const end = new Date(date);
-  end.setHours(23, 59, 59, 999);
-  return [start, end];
+  return [start, getLastHours(date)];
 }
 
-export function getWeeklyRange(date: Date): [Date, Date] {
-  const start = getStartOfWeek(date);
-  let end = new Date(start);
-  end.setDate(start.getDate() + 6);
-  end.setHours(23, 59, 59, 999);
+export const getWeeklyRange = (date: Date): [Date, Date] => {
+  const startOfWeek = getStartOfWeek(date);
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
 
-  const toDay = new Date();
-  if (end > toDay) {
-    end = toDay;
-  }
-  return [start, end]
+  return [startOfWeek, getLastHours(endOfWeek)]
 }
 
-export function getMonthlyRange(date: Date): [Date, Date] {
-  const start = new Date(date);
-  start.setDate(1);
-  start.setHours(0, 0, 0, 0);
+export const getMonthlyRange = (date: Date): [Date, Date] => {
+  const startOfMonth = new Date(date);
+  startOfMonth.setDate(1);
+  startOfMonth.setHours(0, 0, 0, 0);
 
-  let end = new Date(start);
-  end.setMonth(start.getMonth() + 1, 0);
-  end.setHours(23, 59, 59, 999);
-
-  const today = new Date();
-  if (end > today) {
-    end = today;
-  }
-  return [start, end];
+  const endOfMonth = new Date(startOfMonth);
+  endOfMonth.setMonth(startOfMonth.getMonth() + 1, 0);
+  return [startOfMonth, getLastHours(endOfMonth)];
 }
 
-export function getYearlyRange(date: Date): [Date, Date] {
-  const start = new Date(date);
-  start.setMonth(0, 1);
-  start.setHours(0, 0, 0, 0);
+export const getYearlyRange = (date: Date): [Date, Date] => {
+  const startDay = new Date(date);
+  startDay.setMonth(0, 1);
+  startDay.setHours(0, 0, 0, 0);
 
-  let end = new Date(start);
-  end.setMonth(11, 31);
-  end.setHours(23, 59, 59, 999);
-
-  const today = new Date();
-  if (end > today) {
-    end = today;
-  }
-  return [start, end];
+  const endOfYear = new Date(startDay);
+  endOfYear.setMonth(11, 31);
+  return [startDay, getLastHours(endOfYear)];
 }
 
 const frequencyRange: Record<Periodicity, (date: Date) => [Date, Date]> = {
@@ -71,6 +58,13 @@ const frequencyRange: Record<Periodicity, (date: Date) => [Date, Date]> = {
   yearly: getYearlyRange
 }
 
-export function getRangeOf(frequency: Periodicity, date: Date): [Date, Date] {
-  return frequencyRange[frequency](date);
+export const getRangeOf = (f: Periodicity, d: Date): [Date, Date] => frequencyRange[f](d);
+
+const dateFormatBasedOnFrequency: Record<Periodicity, string> = {
+  daily: DAILY_FORMAT,
+  weekly: WEEKLY_FORMAT,
+  monthly: MONTHLY_FORMAT,
+  yearly: YEARLY_FORMAT
 }
+
+export const getDateFormatOf = (f: Periodicity) => dateFormatBasedOnFrequency[f];

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -10,23 +10,23 @@ import { SelectModule } from 'primeng/select';
 import { ExpenseService } from '../../../services/expense/expense.service';
 import { HomeService } from '../../../services/home/home.service';
 import { AlertService } from '../../../services/alert/alert.service';
-import { Category, Expense } from '../../../models/expense';
+import { Expense } from '../../../models/expense';
+import { CategoryService } from '../../../services/expense/category.service';
 
 const PrimeNgImport = [ButtonModule, DatePickerModule, FloatLabel, InputNumberModule, InputTextModule, SelectModule];
 
 @Component({
   selector: 'app-expense-form',
   imports: [ReactiveFormsModule, ...PrimeNgImport],
-  templateUrl: './expense-form.component.html',
-  styleUrl: './expense-form.component.scss'
+  templateUrl: './expense-form.component.html'
 })
 export class ExpenseFormComponent {
   private fb = inject(FormBuilder);
   private alertService = inject(AlertService);
   private service = inject(ExpenseService);
   private homeService = inject(HomeService);
+  categories = inject(CategoryService).categories;
 
-  @Input() categories: Category[] | null = null;
   @Output() saved = new EventEmitter<void>();
 
   submitting = false;

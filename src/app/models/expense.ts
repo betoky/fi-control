@@ -5,7 +5,6 @@ export type Category = {
   bg: string;
 }
 
-
 export type Expense = {
   id: number;
   title: string;
@@ -15,4 +14,14 @@ export type Expense = {
   unit: string | null;
   category: Category | null;
   created_at: string;
+}
+
+export type TotalByCategory = {
+  category: string;
+  total: number;
+}
+
+export type AnnualTotal = {
+  month: string;
+  total: number;
 }

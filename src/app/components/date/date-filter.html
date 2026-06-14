@@ -1,41 +1,46 @@
+@let isRangeMode = service.isRangeMode();
+@let frequency = service.frequency();
 <p-card [style]="{'--p-card-body-padding': '.5rem'}">
   <div class="flex flex-col items-center xl:flex-row xl:justify-between gap-1">
     <div class="max-sm:overflow-x-auto max-sm:w-full max-sm:text-center max-sm:scroll scrollbar-none">
       <p-selectbutton
         size="small"
+        optionLabel="label" optionValue="value" aria-labelledby="Frequence de date"
         [options]="periodOptions"
         [allowEmpty]="false"
         [disabled]="isRangeMode"
-        [(ngModel)]="frequency"
-        (onChange)="onFrequencyChange()"
-        optionLabel="label" optionValue="value" aria-labelledby="Frequence de date" />
+        [ngModel]="isRangeMode ? undefined : frequency"
+        (onChange)="service.changeFrequency($event.value)"
+      />
     </div>
 
     <div class="flex items-center gap-1.5">
       <div class="flex items-center">
         <!-- Weekly range -->
+        @let range = service.rangeDate();
         @if (!isRangeMode && frequency === 'weekly' && range) {
-          <label for="date-picker" class="text-sm font-medium capitalize cursor-pointer">{{ range[0].getDate() }} - {{ range[1].getDate() }}</label>
+          <label for="date-picker" class="text-sm font-medium capitalize cursor-pointer">
+            {{ range[0].getDate() }} - {{ range[1].getDate() }}
+          </label>
         }
         @let pickerInputClass = isRangeMode ? '' : '!bg-transparent !shadow-none !border-transparent font-medium cursor-pointer';
-        <p-datepicker [readonlyInput]="true" inputId="date-picker"
+        <p-datepicker #dp inputId="date-picker"
           size="small"
           [inputStyle]="{ fieldSizing: 'content' }"
           [inputStyleClass]="'!text-sm ' + pickerInputClass"
-          [selectionMode]="isRangeMode ? 'range' : 'single'"
-          [view]="dateView"
-          [dateFormat]="dateFormat"
           [readonlyInput]="true"
           [showIcon]="false"
-          [maxDate]="maxDate"
-          [(ngModel)]="displayDate"
-          (onClose)="onCloseDatePicker(); datePickerHasChange = false;"
-          (ngModelChange)="datePickerHasChange = true;"/>
+          [maxDate]="dpMaxDate"
+          [selectionMode]="dpSelectionMode()"
+          [view]="dpView()"
+          [dateFormat]="dpDateFormat()"
+          [ngModel]="dpValue()"
+          (onSelect)="onSelect(dp.value)"/>
       </div>
       <!-- Switch mode button -->
       <p-button size="small" icon="pi pi-arrow-right-arrow-left"
         [text]="true" severity="secondary"
-        (onClick)="onSwitchMode()" />
+        (onClick)="service.toggleRangeMode()" />
     </div>
   </div>
 </p-card>
