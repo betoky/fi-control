@@ -7,7 +7,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { RegistrationComponent } from './pages/registration/registration.component';
 import { LayoutComponent } from './components/layout/layout.component';
-import { ExpenseComponent } from './pages/expense/expense.component';
+import { Expense } from './pages/expense/expense';
 
 export const routes: Routes = [
   {
@@ -31,7 +31,7 @@ export const routes: Routes = [
       },
       {
         path: 'expense',
-        component: ExpenseComponent
+        component: Expense
       },
       {
         path: 'bank',

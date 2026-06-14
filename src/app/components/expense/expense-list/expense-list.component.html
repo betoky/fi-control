@@ -10,6 +10,8 @@
 }
 @else {
   @for (i of [0, 1, 2, 3, 5]; track i; let first = $first) {
-    <p-skeleton class="block mt-2" [class.mt-2]="!first" height="5rem" />
+    <p-card [style.--p-card-body-padding]="'.25rem'" class="block mt-2" [class.mt-2]="!first">
+      <p-skeleton height="4.75rem" />
+    </p-card>
   }
 }

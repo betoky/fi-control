@@ -1,6 +1,14 @@
 <div class="lg:flex lg:gap-3 lg:justify-center lg:items-start">
   <div class="lg:flex-1 flex flex-col">
     <app-date-filter class="lg:sticky top-[70px] z-50"/>
+    <div class="mt-2 min-h-64 2xl:max-h-96 flex flex-col 2xl:flex-row 2xl:justify-stretch gap-2">
+      <div class="flex-1 p-card p-4">
+        <app-expense-stats [data]="stats" [loading]="statsLoading" class="h-full"/>
+      </div>
+      <div class="flex-1 p-card p-4">
+        <app-expense-summary [data]="summary" [loading]="summaryLoad" class="h-full block"/>
+      </div>
+    </div>
     @let loadingClass = loading ? "visible opacity-100" : "invisible opacity-0" ;
     <p-skeleton [class]="'my-1 mx-auto block w-11/12 transition-opacity pointer-events-none ' + loadingClass" height="3px"></p-skeleton>
     <app-expense-list [expenses]='expenses' (refresh)="loadExpenses()" />

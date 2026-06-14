@@ -69,14 +69,19 @@ export class ExpenseService {
   }
 
   async getSummary(frequency: Periodicity, date: Date) {
+    // remove timezone offset
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
     const summary = rpcSummaryOf(frequency);
     const { error, data } = await this.supabase.rpc(summary, { param: date.toISOString() });
     if (error) throw error;
     return data as { category: string; total: number }[];
   }
 
-  async getStats(date: Date) {
-    const { error, data } = await this.supabase.rpc('annual_statistics', { param: date.toISOString() });
+  async getAnnualStats(date: Date) {
+    // remove timezone offset
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const { error, data } = await this.supabase.rpc('annual_statistics', { param: date.toISOString(), time_zone: tz });
     if (error) throw error;
     return data;
   }

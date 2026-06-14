@@ -6,7 +6,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { Periodicity, RANGE_FORMAT } from '../../models/date';
-import { DateFilterService } from '../../services/date/date-filter.service';
+import { DateSelection } from '../../services/date/date-selection';
 import { getDateFormatOf } from '../../utils/date.utility';
 
 type PeriodFilter = {
@@ -17,10 +17,10 @@ type PeriodFilter = {
 @Component({
   selector: 'app-date-filter',
   imports: [ButtonModule, CardModule, DatePickerModule, FloatLabelModule, FormsModule, SelectButtonModule],
-  templateUrl: './date-filter.component.html'
+  templateUrl: './date-filter.html'
 })
-export class DateFilterComponent {
-  service = inject(DateFilterService);
+export class DateFilter {
+  service = inject(DateSelection);
 
   periodOptions: PeriodFilter[] = [
     { label: 'Quotidien', value: 'daily' },

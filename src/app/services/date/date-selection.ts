@@ -5,20 +5,25 @@ import { getRangeOf } from '../../utils/date.utility';
 @Injectable({
   providedIn: 'root'
 })
-export class DateFilterService {
+export class DateSelection {
   private _currentDate = signal(new Date());
   private _frequency = signal<Periodicity>('weekly');
   private _isRangeMode = signal(false);
   private _rangeDate = signal<[Date, Date]>(getRangeOf(this._frequency(), this._currentDate()));
+  private _year = signal<number>(this._currentDate().getFullYear())
 
   currentDate = this._currentDate.asReadonly();
   frequency = this._frequency.asReadonly();
   isRangeMode = this._isRangeMode.asReadonly();
   rangeDate = this._rangeDate.asReadonly();
+  year = this._year.asReadonly();
 
   selectDate(date: Date) {
     this._currentDate.set(date);
     this._rangeDate.set(getRangeOf(this._frequency(), date));
+    if (date.getFullYear() !== this._year()) {
+      this._year.set(date.getFullYear());
+    }
   }
 
   selectRange(range: [Date, Date]) {
