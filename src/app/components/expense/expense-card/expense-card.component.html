@@ -1,18 +1,20 @@
 
 @let category = expense.category;
 <p-card>
-  <div #el class="grid grid-cols-2 md:grid-cols-3 items-center gap-1.5">
+  <div class="flex justify-between items-center gap-1.5">
     <div class="flex flex-col gap-1">
       <h3 class="font-semibold text-xl">{{ expense.title }}</h3>
-      <span class="text-neutral-500 text-sm first-letter:uppercase">{{ expense.date | date }}</span>
-    </div>
-    <div class="w-full text-end md:text-center">
       @if (category) {
-        <app-chip class="ms-2" [label]="category.name" [bg]="category.bg" [color]="category.color" />
+        <app-chip [label]="category.name" [bg]="category.bg" [color]="category.color" />
       }
+      <span class="text-neutral-500 text-xs first-letter:uppercase">{{ expense.date | date }}</span>
     </div>
-    <div class="text-end col-span-2 md:col-span-1 font-bold text-xl">{{ expense.amount | currency }}</div>
+    <div class="flex items-center gap-0.5">
+      <div class="text-end col-span-2 md:col-span-1 font-bold text-xl text-nowrap">{{ expense.amount | currency }}</div>
+      <p-menu #menuContext [popup]="true" [model]="menus" />
+      <p-button icon="pi pi-ellipsis-v" [rounded]="true" [text]="true" severity="contrast"
+        (click)="menuContext.toggle($event)"/>
+    </div>
   </div>
-  <p-contextmenu class="text-sm" [model]="menus" [target]="el"/>
 </p-card>
 <p-confirmdialog />

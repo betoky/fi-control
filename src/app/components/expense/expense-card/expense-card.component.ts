@@ -1,8 +1,9 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { CardModule } from 'primeng/card';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ContextMenuModule } from 'primeng/contextmenu';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ConfirmationService, MenuItem } from 'primeng/api';
+import { Menu } from "primeng/menu";
 import { ChipComponent } from '../../chip/chip.component';
 import { Expense } from '../../../models/expense';
 import { DatePipe } from '../../../pipes/date.pipe';
@@ -10,7 +11,7 @@ import { CurrencyPipe } from '../../../pipes/currency.pipe';
 
 @Component({
   selector: 'app-expense-card',
-  imports: [CardModule, ConfirmDialogModule, ContextMenuModule, ChipComponent, CurrencyPipe, DatePipe],
+  imports: [Button, Card, ConfirmDialog, ChipComponent, CurrencyPipe, DatePipe, Menu],
   templateUrl: './expense-card.component.html',
   styleUrl: './expense-card.component.scss',
   providers: [ConfirmationService]
